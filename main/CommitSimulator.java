@@ -180,7 +180,7 @@ public class CommitSimulator {
         System.out.printf("║                        │                      │ reveal the decision  ║%n");
         System.out.printf("║ Network partition      │ May block            │ Still blocks (3PC    ║%n");
         System.out.printf("║                        │                      │ assumes no partition)║%n");
-        System.out.printf("║ Phase 1                │ prepare -> ready/abort│ IDENTICAL            ║%n");
+        System.out.printf("║ Phase 1                │ prepare->ready/abort │ IDENTICAL            ║%n");
         System.out.printf("║ Log entry after Phase 1│ <ready T>            │ <ready T>            ║%n");
         System.out.printf("║ Log entry after Phase 2│ <commit/abort T>     │ <precommit/abort T>  ║%n");
         System.out.printf("╚══════════════════════════════════════════════════════════════════════╝%n");
