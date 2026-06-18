@@ -96,16 +96,13 @@ In `CommitSimulator.main()`, add four new scenarios using the `FailurePoint` enu
 //              What does S1 find in its log when it recovers?
 ```
 
-For each scenario, write a one-sentence comment in the code describing what the
-recovery output tells you.
+For each scenario, write a one-sentence comment in the code describing what the recovery output tells you.
 
 ---
 
 ### Exercise C - Recovery Oracle
 
-Without running the code, predict the output of `recover()` for each participant
-given the following log states. Then run the simulator (create a new scenario)
-to verify.
+Without running the code, predict the output of `recover()` for each participant given the following log states. Then run the simulator (create a new scenario) to verify.
 
 **Transaction T_X in a 2PC system:**
 
