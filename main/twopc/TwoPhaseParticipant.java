@@ -1,7 +1,7 @@
-package pddm.twopc;
+package main.twopc;
 
-import pddm.common.LogEntry;
-import pddm.common.SiteLog;
+import main.common.LogEntry;
+import main.common.SiteLog;
 
 /**
  * A 2PC participant site.
@@ -84,8 +84,8 @@ public class TwoPhaseParticipant {
      * ├─────────────────────────────┼──────────────────────────────────────────┤
      * │ <COMMIT T>                  │ Nothing — already committed              │
      * │ <ABORT T>                   │ Nothing — already aborted                │
-     * │ <READY T> only              │ Unknown fate → contact coordinator       │
-     * │ Nothing about T             │ Coordinator aborted → undo(T)            │
+     * │ <READY T> only              │ Unknown fate -> contact coordinator       │
+     * │ Nothing about T             │ Coordinator aborted -> undo(T)            │
      * └─────────────────────────────┴──────────────────────────────────────────┘
      */
     public void recover(String txId) {
@@ -98,17 +98,17 @@ public class TwoPhaseParticipant {
         boolean hasReady     = log.contains(LogEntry.Type.READY,  txId);
 
         if (hasCommit) {
-            System.out.printf("  [%s] Found <COMMIT T> → already committed, nothing to do.%n", siteId);
+            System.out.printf("  [%s] Found <COMMIT T> -> already committed, nothing to do.%n", siteId);
         } else if (hasAbort) {
-            System.out.printf("  [%s] Found <ABORT T> → already aborted, nothing to do.%n", siteId);
+            System.out.printf("  [%s] Found <ABORT T> -> already aborted, nothing to do.%n", siteId);
         } else if (hasReady) {
-            System.out.printf("  [%s] Found <READY T> only → fate unknown!%n", siteId);
+            System.out.printf("  [%s] Found <READY T> only -> fate unknown!%n", siteId);
             System.out.printf("  [%s] *** MUST contact coordinator to learn decision. ***%n", siteId);
             System.out.printf("  [%s] *** Holding all locks until resolved. ***%n", siteId);
             // In a real system: send a query to the coordinator and wait.
             // If coordinator is also down, this site BLOCKS — the 2PC problem.
         } else {
-            System.out.printf("  [%s] No log entry for T → coordinator aborted before reaching us.%n", siteId);
+            System.out.printf("  [%s] No log entry for T -> coordinator aborted before reaching us.%n", siteId);
             System.out.printf("  [%s] Executing undo(%s).%n", siteId, txId);
         }
     }

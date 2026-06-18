@@ -1,4 +1,4 @@
-package pddm.common;
+package main.common;
 
 import java.util.ArrayList;
 import java.util.List;

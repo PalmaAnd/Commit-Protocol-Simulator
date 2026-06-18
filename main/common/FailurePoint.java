@@ -1,4 +1,4 @@
-package pddm.common;
+package main.common;
 
 /**
  * Controls exactly where in the protocol the coordinator is injected to fail.

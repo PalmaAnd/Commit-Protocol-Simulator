@@ -5,17 +5,17 @@
 Requires Java 17+. No external dependencies.
 
 ```bash
-# Compile (from the folder containing pddm/)
+# Compile (from the folder containing main/)
 javac -d out $(find . -name "*.java")
 
 # Run
-java -cp out pddm.CommitSimulator
+java -cp out main.CommitSimulator
 ```
 
 ## Project Structure
 
 ```
-pddm/
+main/
 ├── CommitSimulator.java          ← main entry point, all 8 scenarios
 ├── common/
 │   ├── LogEntry.java             ← stable log entry (PREPARE, READY, PRECOMMIT, COMMIT, ABORT)
@@ -36,7 +36,7 @@ pddm/
 | Scenario | Protocol | What it demonstrates |
 |----------|----------|----------------------|
 | 2PC-1 | 2PC | Happy path — all sites commit |
-| 2PC-2 | 2PC | One participant votes ABORT → all abort |
+| 2PC-2 | 2PC | One participant votes ABORT -> all abort |
 | 2PC-3 | 2PC | **THE BLOCKING PROBLEM** — coordinator crashes after decision |
 | 2PC-4 | 2PC | Participant crashes before Phase 1, recovers with empty log |
 | 3PC-1 | 3PC | Happy path — all three phases |
@@ -139,14 +139,14 @@ Implement `TwoPhaseCoordinator.recover(String txId, List<TwoPhaseParticipant> pa
  * to determine what to do.
  *
  * Rules:
- *  - If coordinator log has <COMMIT T>   → re-send commit to all participants
- *  - If coordinator log has <ABORT T>    → re-send abort to all participants
+ *  - If coordinator log has <COMMIT T>   -> re-send commit to all participants
+ *  - If coordinator log has <ABORT T>    -> re-send abort to all participants
  *  - If coordinator log has <PREPARE T> only (no decision yet):
- *      → check participants:
- *          - any participant has <ABORT T>   → abort
- *          - any participant has <COMMIT T>  → commit
- *          - all participants have <READY T> → BLOCKING — cannot decide
- *          - some participant has nothing    → abort (safe: they never voted)
+ *      -> check participants:
+ *          - any participant has <ABORT T>   -> abort
+ *          - any participant has <COMMIT T>  -> commit
+ *          - all participants have <READY T> -> BLOCKING — cannot decide
+ *          - some participant has nothing    -> abort (safe: they never voted)
  */
 public void recover(String txId, List<TwoPhaseParticipant> participants) {
     // TODO: implement

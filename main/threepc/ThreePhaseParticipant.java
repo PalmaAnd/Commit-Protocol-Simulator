@@ -1,7 +1,7 @@
-package pddm.threepc;
+package main.threepc;
 
-import pddm.common.LogEntry;
-import pddm.common.SiteLog;
+import main.common.LogEntry;
+import main.common.SiteLog;
 
 /**
  * A 3PC participant site.
@@ -16,7 +16,7 @@ import pddm.common.SiteLog;
  * ├──────────────────────────┼──────────────────────────────────────────────────┤
  * │ <COMMIT T>               │ Nothing — already committed                      │
  * │ <ABORT T>                │ Nothing — already aborted                        │
- * │ <PRECOMMIT T> only       │ Ask coordinator; if still precommit → send ACK   │
+ * │ <PRECOMMIT T> only       │ Ask coordinator; if still precommit -> send ACK   │
  * │ <READY T> only           │ Ask coordinator                                  │
  * │ Nothing                  │ undo(T), write <ABORT T>                         │
  * └──────────────────────────┴──────────────────────────────────────────────────┘
@@ -99,20 +99,20 @@ public class ThreePhaseParticipant {
         boolean hasReady     = log.contains(LogEntry.Type.READY,      txId);
 
         if (hasCommit) {
-            System.out.printf("  [%s] Found <COMMIT T> → already committed, nothing to do.%n", siteId);
+            System.out.printf("  [%s] Found <COMMIT T> -> already committed, nothing to do.%n", siteId);
         } else if (hasAbort) {
-            System.out.printf("  [%s] Found <ABORT T> → already aborted, nothing to do.%n", siteId);
+            System.out.printf("  [%s] Found <ABORT T> -> already aborted, nothing to do.%n", siteId);
         } else if (hasPrecommit) {
-            System.out.printf("  [%s] Found <PRECOMMIT T> → coordinator decided COMMIT.%n", siteId);
+            System.out.printf("  [%s] Found <PRECOMMIT T> -> coordinator decided COMMIT.%n", siteId);
             System.out.printf("  [%s] Contacting coordinator/peers to resume Phase 3.%n", siteId);
             System.out.printf("  [%s] If no coordinator, new coordinator can safely commit.%n", siteId);
             // KEY INSIGHT: Unlike 2PC <ready T>, <precommit T> tells us the decision.
             // A new coordinator elected by peers can commit without the original coordinator.
         } else if (hasReady) {
-            System.out.printf("  [%s] Found <READY T> only → contact coordinator.%n", siteId);
+            System.out.printf("  [%s] Found <READY T> only -> contact coordinator.%n", siteId);
             System.out.printf("  [%s] New coordinator can abort (nobody precommitted yet).%n", siteId);
         } else {
-            System.out.printf("  [%s] No log entry → undo(%s), write <ABORT T>.%n", siteId, txId);
+            System.out.printf("  [%s] No log entry -> undo(%s), write <ABORT T>.%n", siteId, txId);
         }
     }
 

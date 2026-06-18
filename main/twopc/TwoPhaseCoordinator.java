@@ -1,8 +1,8 @@
-package pddm.twopc;
+package main.twopc;
 
-import pddm.common.FailurePoint;
-import pddm.common.LogEntry;
-import pddm.common.SiteLog;
+import main.common.FailurePoint;
+import main.common.LogEntry;
+import main.common.SiteLog;
 
 import java.util.List;
 
@@ -79,7 +79,7 @@ public class TwoPhaseCoordinator {
         // This is THE critical blocking scenario in 2PC:
         //   - All participants have <ready T> in their log
         //   - Nobody has received the commit/abort message
-        //   - Coordinator is down → participants block holding locks forever
+        //   - Coordinator is down -> participants block holding locks forever
         if (failure == FailurePoint.AFTER_DECISION) {
             simulateCrash("after writing decision to log, before sending to participants");
             System.out.printf("%n  *** BLOCKING PROBLEM DEMONSTRATED ***%n");

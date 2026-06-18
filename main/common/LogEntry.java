@@ -1,4 +1,4 @@
-package pddm.common;
+package main.common;
 
 /**
  * Represents a single entry written to a site's stable log.

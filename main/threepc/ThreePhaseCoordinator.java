@@ -1,8 +1,8 @@
-package pddm.threepc;
+package main.threepc;
 
-import pddm.common.FailurePoint;
-import pddm.common.LogEntry;
-import pddm.common.SiteLog;
+import main.common.FailurePoint;
+import main.common.LogEntry;
+import main.common.SiteLog;
 
 import java.util.List;
 
@@ -68,15 +68,15 @@ public class ThreePhaseCoordinator {
         if (!allReady) {
             // Abort path: same as 2PC — broadcast abort
             log.write(LogEntry.Type.ABORT, txId);
-            System.out.printf("  [%s] At least one ABORT vote → broadcasting ABORT%n", siteId);
+            System.out.printf("  [%s] At least one ABORT vote -> broadcasting ABORT%n", siteId);
             for (ThreePhaseParticipant p : participants) p.abortPhase2(txId);
             System.out.printf("%n  [%s] Protocol complete (aborted).%n", siteId);
             return;
         }
 
-        // All voted ready → broadcast PRECOMMIT
+        // All voted ready -> broadcast PRECOMMIT
         log.write(LogEntry.Type.PRECOMMIT, txId);
-        System.out.printf("  [%s] All ready → logging <PRECOMMIT T>, broadcasting PRECOMMIT%n", siteId);
+        System.out.printf("  [%s] All ready -> logging <PRECOMMIT T>, broadcasting PRECOMMIT%n", siteId);
 
         int acks = 0;
         for (ThreePhaseParticipant p : participants) {
@@ -87,11 +87,11 @@ public class ThreePhaseCoordinator {
         // ── Crash AFTER PRECOMMIT is distributed ─────────────────────────────
         // CRITICAL COMPARISON WITH 2PC:
         // In 2PC's equivalent moment (all ready, coordinator writes commit but hasn't sent it),
-        // participants only have <READY T> → fate unknown → they BLOCK.
+        // participants only have <READY T> -> fate unknown -> they BLOCK.
         //
         // Here, participants that received PRECOMMIT have <PRECOMMIT T> in their log.
         // A new coordinator can inspect those logs and know: the decision was COMMIT.
-        // → 3PC does NOT block (under the no-partition assumption).
+        // -> 3PC does NOT block (under the no-partition assumption).
         if (failure == FailurePoint.AFTER_DECISION) {
             simulateCrash("after distributing PRECOMMIT (equivalent to 2PC blocking moment)");
             System.out.printf("%n  *** KEY DIFFERENCE vs 2PC demonstrated ***%n");
@@ -107,7 +107,7 @@ public class ThreePhaseCoordinator {
         System.out.printf("%n--- Phase 3: Final commit ---%n");
 
         if (acks < requiredAcks) {
-            System.out.printf("  [%s] Not enough acks (%d < %d required) → abort%n",
+            System.out.printf("  [%s] Not enough acks (%d < %d required) -> abort%n",
                     siteId, acks, requiredAcks);
             log.write(LogEntry.Type.ABORT, txId);
             for (ThreePhaseParticipant p : participants) p.abortPhase2(txId);
@@ -115,7 +115,7 @@ public class ThreePhaseCoordinator {
         }
 
         log.write(LogEntry.Type.COMMIT, txId);
-        System.out.printf("  [%s] Sufficient acks received → broadcasting COMMIT%n", siteId);
+        System.out.printf("  [%s] Sufficient acks received -> broadcasting COMMIT%n", siteId);
 
         int sent = 0;
         for (ThreePhaseParticipant p : participants) {

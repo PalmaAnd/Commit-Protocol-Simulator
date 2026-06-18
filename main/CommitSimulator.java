@@ -1,18 +1,14 @@
-package pddm;
+package main;
 
-import pddm.common.FailurePoint;
-import pddm.threepc.ThreePhaseCoordinator;
-import pddm.threepc.ThreePhaseParticipant;
-import pddm.twopc.TwoPhaseCoordinator;
-import pddm.twopc.TwoPhaseParticipant;
+import main.common.FailurePoint;
+import main.threepc.ThreePhaseCoordinator;
+import main.threepc.ThreePhaseParticipant;
+import main.twopc.TwoPhaseCoordinator;
+import main.twopc.TwoPhaseParticipant;
 
 import java.util.List;
 
 /**
- * ═══════════════════════════════════════════════════════════════════════════
- *  PDDM Assignment 1 — 2PC & 3PC Commit Protocol Simulator
- * ═══════════════════════════════════════════════════════════════════════════
- *
  *  This simulator runs eight scenarios covering all exam-relevant cases.
  *
  *  HOW TO READ THE OUTPUT
@@ -32,10 +28,10 @@ import java.util.List;
  *  2PC-4  Participant crashes before Phase 1, then recovers
  *
  *  3PC-1  Happy path: all three phases complete normally
- *  3PC-2  One participant votes ABORT → clean abort via Phase 2
+ *  3PC-2  One participant votes ABORT -> clean abort via Phase 2
  *  3PC-3  Coordinator crashes after distributing PRECOMMIT
- *          → Participants have <PRECOMMIT T> → new coordinator can commit
- *          → NO BLOCKING (compare with 2PC-3)
+ *          -> Participants have <PRECOMMIT T> -> new coordinator can commit
+ *          -> NO BLOCKING (compare with 2PC-3)
  *  3PC-4  Participant misses PRECOMMIT message, then recovers
  *
  * ═══════════════════════════════════════════════════════════════════════════
@@ -104,7 +100,7 @@ public class CommitSimulator {
             coord.runProtocol("T4", List.of(p1, p2, p3), FailurePoint.NONE);
 
             System.out.printf("%n  --- S2 recovers ---%n");
-            p2.recover("T4"); // finds nothing in log → undo
+            p2.recover("T4"); // finds nothing in log -> undo
         }
 
         // ────────────────────────────────────────────────────────────────────
@@ -122,7 +118,7 @@ public class CommitSimulator {
 
         // ────────────────────────────────────────────────────────────────────
 
-        scenario("3PC-2: One participant votes ABORT → clean abort");
+        scenario("3PC-2: One participant votes ABORT -> clean abort");
         {
             var coord = new ThreePhaseCoordinator("C", 3);
             var p1 = new ThreePhaseParticipant("S1", true);
@@ -184,7 +180,7 @@ public class CommitSimulator {
         System.out.printf("║                        │                      │ reveal the decision  ║%n");
         System.out.printf("║ Network partition      │ May block            │ Still blocks (3PC    ║%n");
         System.out.printf("║                        │                      │ assumes no partition)║%n");
-        System.out.printf("║ Phase 1                │ prepare → ready/abort│ IDENTICAL            ║%n");
+        System.out.printf("║ Phase 1                │ prepare -> ready/abort│ IDENTICAL            ║%n");
         System.out.printf("║ Log entry after Phase 1│ <ready T>            │ <ready T>            ║%n");
         System.out.printf("║ Log entry after Phase 2│ <commit/abort T>     │ <precommit/abort T>  ║%n");
         System.out.printf("╚══════════════════════════════════════════════════════════════════════╝%n");
