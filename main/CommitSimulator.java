@@ -44,7 +44,7 @@ public class CommitSimulator {
         // 2PC SCENARIOS
         // ────────────────────────────────────────────────────────────────────
 
-        scenario("2PC-1: Happy path — all participants ready");
+        scenario("2PC-1: Happy path - all participants ready");
         {
             var coord = new TwoPhaseCoordinator("C");
             var p1 = new TwoPhaseParticipant("S1", true);
@@ -78,7 +78,7 @@ public class CommitSimulator {
 
             // Now show what recovery looks like for each participant
             System.out.printf("%n  --- Recovery attempts for participants ---%n");
-            System.out.printf("  (Coordinator is still down — they cannot get an answer)%n");
+            System.out.printf("  (Coordinator is still down - they cannot get an answer)%n");
             p1.recover("T3");
             p2.recover("T3");
             p3.recover("T3");
@@ -107,7 +107,7 @@ public class CommitSimulator {
         // 3PC SCENARIOS
         // ────────────────────────────────────────────────────────────────────
 
-        scenario("3PC-1: Happy path — all three phases complete");
+        scenario("3PC-1: Happy path - all three phases complete");
         {
             var coord = new ThreePhaseCoordinator("C", 3);
             var p1 = new ThreePhaseParticipant("S1", true);
@@ -129,7 +129,7 @@ public class CommitSimulator {
 
         // ────────────────────────────────────────────────────────────────────
 
-        scenario("3PC-3: *** KEY INSIGHT — No blocking after coordinator crash ***\n" +
+        scenario("3PC-3: *** KEY INSIGHT - No blocking after coordinator crash ***\n" +
                  "       Coordinator crashes after PRECOMMIT distributed.\n" +
                  "       Compare recovery with 2PC-3: participants are NOT stuck.");
         {
@@ -169,13 +169,13 @@ public class CommitSimulator {
 
         System.out.printf("%n%n");
         System.out.printf("╔══════════════════════════════════════════════════════════════════════╗%n");
-        System.out.printf("║              2PC vs 3PC — Key Comparison                            ║%n");
+        System.out.printf("║              2PC vs 3PC - Key Comparison                            ║%n");
         System.out.printf("╠══════════════════════════════════════════════════════════════════════╣%n");
         System.out.printf("║ Scenario               │ 2PC outcome          │ 3PC outcome          ║%n");
         System.out.printf("╠══════════════════════════════════════════════════════════════════════╣%n");
         System.out.printf("║ Happy path             │ commits              │ commits              ║%n");
         System.out.printf("║ One no vote            │ aborts               │ aborts               ║%n");
-        System.out.printf("║ Coordinator crash      │ BLOCKS (all ready,   │ No block — sites     ║%n");
+        System.out.printf("║ Coordinator crash      │ BLOCKS (all ready,   │ No block - sites     ║%n");
         System.out.printf("║ after decision         │ no decision known)   │ with <precommit T>   ║%n");
         System.out.printf("║                        │                      │ reveal the decision  ║%n");
         System.out.printf("║ Network partition      │ May block            │ Still blocks (3PC    ║%n");

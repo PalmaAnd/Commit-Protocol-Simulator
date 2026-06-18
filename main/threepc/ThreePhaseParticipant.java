@@ -8,14 +8,14 @@ import main.common.SiteLog;
  *
  * The key difference from 2PC: there is an intermediate PRECOMMIT state.
  * Once a participant logs <PRECOMMIT T>, it knows the coordinator decided to
- * commit — so a new coordinator can complete the protocol without the original.
+ * commit - so a new coordinator can complete the protocol without the original.
  *
  * Recovery table (exam version):
  * ┌──────────────────────────┬──────────────────────────────────────────────────┐
  * │ Log entry found          │ Action                                           │
  * ├──────────────────────────┼──────────────────────────────────────────────────┤
- * │ <COMMIT T>               │ Nothing — already committed                      │
- * │ <ABORT T>                │ Nothing — already aborted                        │
+ * │ <COMMIT T>               │ Nothing - already committed                      │
+ * │ <ABORT T>                │ Nothing - already aborted                        │
  * │ <PRECOMMIT T> only       │ Ask coordinator; if still precommit -> send ACK   │
  * │ <READY T> only           │ Ask coordinator                                  │
  * │ Nothing                  │ undo(T), write <ABORT T>                         │
@@ -38,7 +38,7 @@ public class ThreePhaseParticipant {
 
     public boolean prepare(String txId) {
         if (crashed) {
-            System.out.printf("  [%s] is crashed — no response to PREPARE%n", siteId);
+            System.out.printf("  [%s] is crashed - no response to PREPARE%n", siteId);
             return false;
         }
         if (canCommit) {
@@ -64,7 +64,7 @@ public class ThreePhaseParticipant {
      */
     public boolean precommit(String txId) {
         if (crashed) {
-            System.out.printf("  [%s] crashed — missed PRECOMMIT message%n", siteId);
+            System.out.printf("  [%s] crashed - missed PRECOMMIT message%n", siteId);
             return false;
         }
         log.write(LogEntry.Type.PRECOMMIT, txId);
@@ -73,7 +73,7 @@ public class ThreePhaseParticipant {
     }
 
     public void abortPhase2(String txId) {
-        if (crashed) { System.out.printf("  [%s] crashed — missed ABORT (phase 2)%n", siteId); return; }
+        if (crashed) { System.out.printf("  [%s] crashed - missed ABORT (phase 2)%n", siteId); return; }
         log.write(LogEntry.Type.ABORT, txId);
         System.out.printf("  [%s] aborted transaction %s ✗%n", siteId, txId);
     }
@@ -81,7 +81,7 @@ public class ThreePhaseParticipant {
     // ── Phase 3: final commit ─────────────────────────────────────────────────
 
     public void commit(String txId) {
-        if (crashed) { System.out.printf("  [%s] crashed — missed COMMIT (phase 3)%n", siteId); return; }
+        if (crashed) { System.out.printf("  [%s] crashed - missed COMMIT (phase 3)%n", siteId); return; }
         log.write(LogEntry.Type.COMMIT, txId);
         System.out.printf("  [%s] committed transaction %s ✓%n", siteId, txId);
     }

@@ -37,11 +37,11 @@ public class TwoPhaseParticipant {
      * @return true = READY (yes vote), false = ABORT (no vote)
      *
      * IMPORTANT: Once we log <READY T> and return true, we are permanently
-     * obligated. We cannot unilaterally abort anymore — we gave up our autonomy.
+     * obligated. We cannot unilaterally abort anymore - we gave up our autonomy.
      */
     public boolean prepare(String txId) {
         if (crashed) {
-            System.out.printf("  [%s] is crashed — no response to PREPARE%n", siteId);
+            System.out.printf("  [%s] is crashed - no response to PREPARE%n", siteId);
             return false; // simulate timeout from coordinator's perspective
         }
         if (canCommit) {
@@ -60,13 +60,13 @@ public class TwoPhaseParticipant {
     // -------------------------------------------------------------------------
 
     public void commit(String txId) {
-        if (crashed) { System.out.printf("  [%s] crashed — missed COMMIT message%n", siteId); return; }
+        if (crashed) { System.out.printf("  [%s] crashed - missed COMMIT message%n", siteId); return; }
         log.write(LogEntry.Type.COMMIT, txId);
         System.out.printf("  [%s] committed transaction %s ✓%n", siteId, txId);
     }
 
     public void abort(String txId) {
-        if (crashed) { System.out.printf("  [%s] crashed — missed ABORT message%n", siteId); return; }
+        if (crashed) { System.out.printf("  [%s] crashed - missed ABORT message%n", siteId); return; }
         log.write(LogEntry.Type.ABORT, txId);
         System.out.printf("  [%s] aborted transaction %s ✗%n", siteId, txId);
     }
@@ -82,8 +82,8 @@ public class TwoPhaseParticipant {
      * ┌─────────────────────────────┬──────────────────────────────────────────┐
      * │ Log entry found             │ Action                                   │
      * ├─────────────────────────────┼──────────────────────────────────────────┤
-     * │ <COMMIT T>                  │ Nothing — already committed              │
-     * │ <ABORT T>                   │ Nothing — already aborted                │
+     * │ <COMMIT T>                  │ Nothing - already committed              │
+     * │ <ABORT T>                   │ Nothing - already aborted                │
      * │ <READY T> only              │ Unknown fate -> contact coordinator       │
      * │ Nothing about T             │ Coordinator aborted -> undo(T)            │
      * └─────────────────────────────┴──────────────────────────────────────────┘
@@ -106,7 +106,7 @@ public class TwoPhaseParticipant {
             System.out.printf("  [%s] *** MUST contact coordinator to learn decision. ***%n", siteId);
             System.out.printf("  [%s] *** Holding all locks until resolved. ***%n", siteId);
             // In a real system: send a query to the coordinator and wait.
-            // If coordinator is also down, this site BLOCKS — the 2PC problem.
+            // If coordinator is also down, this site BLOCKS - the 2PC problem.
         } else {
             System.out.printf("  [%s] No log entry for T -> coordinator aborted before reaching us.%n", siteId);
             System.out.printf("  [%s] Executing undo(%s).%n", siteId, txId);

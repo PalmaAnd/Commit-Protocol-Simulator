@@ -38,7 +38,7 @@ public class ThreePhaseCoordinator {
                             FailurePoint failure) {
 
         System.out.printf("%n╔══════════════════════════════════════╗%n");
-        System.out.printf("║  3PC — transaction %-18s║%n", txId);
+        System.out.printf("║  3PC - transaction %-18s║%n", txId);
         System.out.printf("╚══════════════════════════════════════╝%n");
 
         if (failure == FailurePoint.BEFORE_PREPARE) {
@@ -46,7 +46,7 @@ public class ThreePhaseCoordinator {
         }
 
         // ════════════════════════════════════════════════════════════════════
-        // PHASE 1 — PREPARE (identical to 2PC Phase 1)
+        // PHASE 1 - PREPARE (identical to 2PC Phase 1)
         // ════════════════════════════════════════════════════════════════════
         System.out.printf("%n--- Phase 1: Prepare (identical to 2PC) ---%n");
         log.write(LogEntry.Type.PREPARE, txId);
@@ -61,12 +61,12 @@ public class ThreePhaseCoordinator {
         }
 
         // ════════════════════════════════════════════════════════════════════
-        // PHASE 2 — PRECOMMIT (new in 3PC)
+        // PHASE 2 - PRECOMMIT (new in 3PC)
         // ════════════════════════════════════════════════════════════════════
         System.out.printf("%n--- Phase 2: Pre-commit decision ---%n");
 
         if (!allReady) {
-            // Abort path: same as 2PC — broadcast abort
+            // Abort path: same as 2PC - broadcast abort
             log.write(LogEntry.Type.ABORT, txId);
             System.out.printf("  [%s] At least one ABORT vote -> broadcasting ABORT%n", siteId);
             for (ThreePhaseParticipant p : participants) p.abortPhase2(txId);
@@ -97,12 +97,12 @@ public class ThreePhaseCoordinator {
             System.out.printf("%n  *** KEY DIFFERENCE vs 2PC demonstrated ***%n");
             System.out.printf("  Participants with <PRECOMMIT T> tell any new coordinator: COMMIT.%n");
             System.out.printf("  Participants with only <READY T> tell any new coordinator: safe to ABORT.%n");
-            System.out.printf("  Either way the protocol can continue — no blocking!%n");
+            System.out.printf("  Either way the protocol can continue - no blocking!%n");
             return;
         }
 
         // ════════════════════════════════════════════════════════════════════
-        // PHASE 3 — COMMIT
+        // PHASE 3 - COMMIT
         // ════════════════════════════════════════════════════════════════════
         System.out.printf("%n--- Phase 3: Final commit ---%n");
 

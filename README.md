@@ -35,13 +35,13 @@ main/
 
 | Scenario | Protocol | What it demonstrates |
 |----------|----------|----------------------|
-| 2PC-1 | 2PC | Happy path — all sites commit |
+| 2PC-1 | 2PC | Happy path - all sites commit |
 | 2PC-2 | 2PC | One participant votes ABORT -> all abort |
-| 2PC-3 | 2PC | **THE BLOCKING PROBLEM** — coordinator crashes after decision |
+| 2PC-3 | 2PC | **THE BLOCKING PROBLEM** - coordinator crashes after decision |
 | 2PC-4 | 2PC | Participant crashes before Phase 1, recovers with empty log |
-| 3PC-1 | 3PC | Happy path — all three phases |
+| 3PC-1 | 3PC | Happy path - all three phases |
 | 3PC-2 | 3PC | Abort path via Phase 2 |
-| 3PC-3 | 3PC | **NO BLOCKING** — same crash as 2PC-3, different outcome |
+| 3PC-3 | 3PC | **NO BLOCKING** - same crash as 2PC-3, different outcome |
 | 3PC-4 | 3PC | Participant misses PRECOMMIT, recovers to correct action |
 
 ---
@@ -52,7 +52,7 @@ Work through these after reading the code and running the simulator.
 
 ---
 
-### Exercise A — Understand the Blocking Problem
+### Exercise A - Understand the Blocking Problem
 
 Run the simulator and compare the output of **2PC-3** and **3PC-3**.
 
@@ -60,35 +60,38 @@ Answer these questions in a comment block at the top of `CommitSimulator.java`:
 
 1. In 2PC-3, what exact log entry do all participants have when the coordinator crashes?
    Why does this entry leave the fate of the transaction unknown?
+   > `<Ready T3>`. All participants have `<READY T>` but no decision. They hold all their locks and CANNOT proceed. They must wait until coordinator recovers.
 
 2. In 3PC-3, what log entry do participants have instead?
    How does this entry allow a new coordinator to make progress?
+    > `[<READY T7>, <PRECOMMIT T7>]`. Participants with `<PRECOMMIT T>` tell any new coordinator: COMMIT. Participants with only `<READY T>` tell any new coordinator: safe to ABORT.
 
 3. In 2PC-3, participant S2 calls `recover()`. What does the output say?
    What would S2 need to do in a real system to resolve its uncertainty?
+   > In a real system: send a query to the coordinator and wait. If coordinator is also down, this site BLOCKS - the 2PC problem.
 
 4. True or False (and explain): *"2PC blocks only if all participants voted READY."*
 
 ---
 
-### Exercise B — Inject Failures at Different Points
+### Exercise B - Inject Failures at Different Points
 
 In `CommitSimulator.main()`, add four new scenarios using the `FailurePoint` enum:
 
 ```java
-// Scenario B1: 2PC — coordinator crashes before sending PREPARE
+// Scenario B1: 2PC - coordinator crashes before sending PREPARE
 // What do participants have in their log? What happens when they recover?
 
-// Scenario B2: 2PC — coordinator crashes after sending PREPARE,
+// Scenario B2: 2PC - coordinator crashes after sending PREPARE,
 //              but before collecting votes
 // Hint: participants have already flushed <READY T> to their logs.
 //       What happens next?
 
-// Scenario B3: 3PC — coordinator crashes mid-broadcast in Phase 3
-//              (AFTER_SOME_COMMITS — S1 gets COMMIT, S2 and S3 do not)
+// Scenario B3: 3PC - coordinator crashes mid-broadcast in Phase 3
+//              (AFTER_SOME_COMMITS - S1 gets COMMIT, S2 and S3 do not)
 // Is the system in an inconsistent state? What must happen?
 
-// Scenario B4: 2PC — participant S1 votes ABORT while S2 and S3 vote READY.
+// Scenario B4: 2PC - participant S1 votes ABORT while S2 and S3 vote READY.
 //              Then S1 crashes before receiving the final ABORT decision.
 //              What does S1 find in its log when it recovers?
 ```
@@ -98,7 +101,7 @@ recovery output tells you.
 
 ---
 
-### Exercise C — Recovery Oracle
+### Exercise C - Recovery Oracle
 
 Without running the code, predict the output of `recover()` for each participant
 given the following log states. Then run the simulator (create a new scenario)
@@ -126,7 +129,7 @@ Hint: use `SiteLog.write()` directly to pre-populate a log state, then call `rec
 
 ---
 
-### Exercise D — Implement Coordinator Recovery
+### Exercise D - Implement Coordinator Recovery
 
 Currently, if the 2PC coordinator crashes and recovers, it has no recovery logic.
 
@@ -145,7 +148,7 @@ Implement `TwoPhaseCoordinator.recover(String txId, List<TwoPhaseParticipant> pa
  *      -> check participants:
  *          - any participant has <ABORT T>   -> abort
  *          - any participant has <COMMIT T>  -> commit
- *          - all participants have <READY T> -> BLOCKING — cannot decide
+ *          - all participants have <READY T> -> BLOCKING - cannot decide
  *          - some participant has nothing    -> abort (safe: they never voted)
  */
 public void recover(String txId, List<TwoPhaseParticipant> participants) {
@@ -160,7 +163,7 @@ Test it by:
 
 ---
 
-### Exercise E — Implement Persistent Messaging (Preview of Assignment 2)
+### Exercise E - Implement Persistent Messaging (Preview of Assignment 2)
 
 This is a stretch exercise connecting Assignment 1 to Assignment 2.
 
@@ -201,8 +204,8 @@ After completing the exercises, you should be able to answer these exam-style T/
 | Statement | Answer |
 |-----------|--------|
 | 2PC does not block as long as the coordinator is reachable | **TRUE** |
-| `<ready T>` in the log means the transaction failed | **FALSE** — fate is unknown |
+| `<ready T>` in the log means the transaction failed | **FALSE** - fate is unknown |
 | Phase 1 of 2PC and 3PC are identical | **TRUE** |
-| 3PC avoids blocking under network partitioning | **FALSE** — assumes no partition |
+| 3PC avoids blocking under network partitioning | **FALSE** - assumes no partition |
 | Finding `<abort T>` in 3PC recovery requires no action | **TRUE** |
 | A participant that logged `<precommit T>` knows the coordinator decided COMMIT | **TRUE** |
