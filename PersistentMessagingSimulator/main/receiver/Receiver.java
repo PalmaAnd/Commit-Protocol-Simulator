@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Models the receiver R and its received_messages relation.
  *
- * ── Receiver Protocol (from lecture) ─────────────────────────────────────────
+ * -- Receiver Protocol (from lecture) -----------------------------------------
  *
  *  On receiving a message M:
  *  1. BEGIN TRANSACTION
@@ -21,12 +21,12 @@ import java.util.*;
  *     (CRITICAL: ack sent AFTER commit - not before - to avoid losing a message
  *      if the receiver crashes between ack-send and commit)
  *
- * ── Deduplication guarantee ───────────────────────────────────────────────────
+ * -- Deduplication guarantee ---------------------------------------------------
  *  Step 2's IF guard ensures idempotency: retransmitted messages are silently
  *  ignored. The receiver only applies an operation once, even if the message
  *  arrives multiple times (due to dropped acks, network retransmission, etc.)
  *
- * ── T_OLD cleanup ─────────────────────────────────────────────────────────────
+ * -- T_OLD cleanup -------------------------------------------------------------
  *  When the sender reports T_OLD, the receiver deletes all rows from
  *  received_messages where time < T_OLD. These rows can never be needed again
  *  (the sender will never resend those messages - it already has their acks).
@@ -35,10 +35,10 @@ public class Receiver {
 
     private final String id;
 
-    // The received_messages relation: number → ReceivedMessage
+    // The received_messages relation: number -> ReceivedMessage
     private final Map<Long, ReceivedMessage> receivedMessages = new LinkedHashMap<>();
 
-    // Simulated data store: variable name → value
+    // Simulated data store: variable name -> value
     // Models the actual database state that operations modify
     private final Map<String, Integer> dataStore = new LinkedHashMap<>();
 
@@ -52,7 +52,7 @@ public class Receiver {
         this.id = id;
     }
 
-    // ── Pre-population (for exam table recreation) ────────────────────────────
+    // -- Pre-population (for exam table recreation) ----------------------------
 
     public void preloadReceivedMessage(long number, String operation, long time) {
         receivedMessages.put(number, new ReceivedMessage(number, operation, time));
@@ -62,13 +62,13 @@ public class Receiver {
         dataStore.put(variable, value);
     }
 
-    // ── Message receipt ───────────────────────────────────────────────────────
+    // -- Message receipt -------------------------------------------------------
 
     /**
      * Process a delivered message. Returns true if an ack was sent.
      *
      * This method models the full receiver transaction:
-     *   BEGIN → deduplicate → insert → apply → COMMIT → send ack
+     *   BEGIN -> deduplicate -> insert -> apply -> COMMIT -> send ack
      *
      * The NetworkChannel's sendAck() call can drop the ack (simulating
      * ack loss), causing the sender to retransmit - testing idempotency.
@@ -81,9 +81,9 @@ public class Receiver {
 
         System.out.printf("  [%s] Receiving Msg#%d: \"%s\"%n", id, msg.number, msg.operation);
 
-        // ── Step 1: check for duplicate ──────────────────────────────────────
+        // -- Step 1: check for duplicate --------------------------------------
         if (receivedMessages.containsKey(msg.number)) {
-            System.out.printf("  [%s] Msg#%d already in received_messages → DUPLICATE, ignored%n",
+            System.out.printf("  [%s] Msg#%d already in received_messages -> DUPLICATE, ignored%n",
                     id, msg.number);
             // Still send ack - sender may not have received the first one
             boolean ackSent = channel.sendAck(msg.number);
@@ -91,7 +91,7 @@ public class Receiver {
             return ackSent;
         }
 
-        // ── Step 2: begin transaction, insert, apply, commit ─────────────────
+        // -- Step 2: begin transaction, insert, apply, commit -----------------
         System.out.printf("  [%s] BEGIN TRANSACTION%n", id);
 
         // Insert into received_messages (within transaction)
@@ -101,22 +101,22 @@ public class Receiver {
         // Apply the operation to the data store (within transaction)
         applyOperation(msg.operation);
 
-        // ── Crash simulation: crash before commit ─────────────────────────────
+        // -- Crash simulation: crash before commit -----------------------------
         // In this case the transaction is rolled back - the insert is undone.
         // The message was not processed. When sender retransmits, receiver
-        // processes it correctly (number not in received_messages → not a duplicate).
+        // processes it correctly (number not in received_messages -> not a duplicate).
         if (crashed) {
-            System.out.printf("  [%s] CRASHED before COMMIT → rolling back%n", id);
+            System.out.printf("  [%s] CRASHED before COMMIT -> rolling back%n", id);
             receivedMessages.remove(msg.number); // simulated rollback
             return false;
         }
 
         System.out.printf("  [%s] COMMIT TRANSACTION%n", id);
 
-        // ── Crash simulation: crash AFTER commit but BEFORE sending ack ───────
+        // -- Crash simulation: crash AFTER commit but BEFORE sending ack -------
         // Most dangerous case: message WAS processed, but ack never sent.
-        // Sender retransmits → receiver sees number already in received_messages
-        // → correctly identified as duplicate → ack re-sent, no double-apply.
+        // Sender retransmits -> receiver sees number already in received_messages
+        // -> correctly identified as duplicate -> ack re-sent, no double-apply.
         if (crashAfterCommit) {
             crashAfterCommit = false;
             crashed = true;
@@ -125,7 +125,7 @@ public class Receiver {
             return false;
         }
 
-        // ── Step 3: send ack AFTER commit ────────────────────────────────────
+        // -- Step 3: send ack AFTER commit ------------------------------------
         boolean ackSent = channel.sendAck(msg.number);
         if (!ackSent) {
             System.out.printf("  [%s] Ack for Msg#%d was DROPPED by network%n", id, msg.number);
@@ -140,7 +140,7 @@ public class Receiver {
         for (Message m : messages) receive(m, channel);
     }
 
-    // ── T_OLD cleanup ─────────────────────────────────────────────────────────
+    // -- T_OLD cleanup ---------------------------------------------------------
 
     /**
      * Apply T_OLD received from the sender: delete all received_messages
@@ -148,18 +148,18 @@ public class Receiver {
      *
      * Safety guarantee: the sender will NEVER resend messages with time < T_OLD
      * (it already has their acks). So these rows in received_messages can never
-     * be needed for deduplication again → safe to delete.
+     * be needed for deduplication again -> safe to delete.
      *
      * EXAM NOTE: rows with time == T_OLD are kept (only strictly less than).
      */
     public void applyTOld(long tOld) {
         if (tOld == Long.MAX_VALUE) {
-            System.out.printf("  [%s] T_OLD = ∞ → clearing ALL entries from received_messages%n", id);
+            System.out.printf("  [%s] T_OLD = ∞ -> clearing ALL entries from received_messages%n", id);
             receivedMessages.clear();
             return;
         }
 
-        System.out.printf("  [%s] Applying T_OLD = %d → removing entries with time < %d%n",
+        System.out.printf("  [%s] Applying T_OLD = %d -> removing entries with time < %d%n",
                 id, tOld, tOld);
 
         int removed = 0;
@@ -176,7 +176,7 @@ public class Receiver {
                 id, removed, receivedMessages.size());
     }
 
-    // ── Operation interpreter ─────────────────────────────────────────────────
+    // -- Operation interpreter -------------------------------------------------
 
     /**
      * Parse and apply a simple DB operation of the form "X <- X + n" or "X <- X - n".
@@ -213,13 +213,13 @@ public class Receiver {
                 return;
             }
             dataStore.put(varName, value);
-            System.out.printf("  [%s]   Applied: %s → %s = %d%n", id, operation, varName, value);
+            System.out.printf("  [%s]   Applied: %s -> %s = %d%n", id, operation, varName, value);
         } catch (Exception e) {
             System.out.printf("  [%s]   Skipping operation (parse error): %s%n", id, operation);
         }
     }
 
-    // ── Crash simulation ──────────────────────────────────────────────────────
+    // -- Crash simulation ------------------------------------------------------
 
     public void crash()              { crashed = true;
         System.out.printf("  [%s] *** CRASHED ***%n", id); }
@@ -227,7 +227,7 @@ public class Receiver {
         System.out.printf("  [%s] Recovered.%n", id); }
     public void crashAfterNextCommit() { crashAfterCommit = true; }
 
-    // ── Inspection ────────────────────────────────────────────────────────────
+    // -- Inspection ------------------------------------------------------------
 
     public void printReceivedTable() {
         System.out.printf("  [%s] received_messages:%n", id);

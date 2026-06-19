@@ -11,15 +11,15 @@ import main.common.SiteLog;
  * commit - so a new coordinator can complete the protocol without the original.
  *
  * Recovery table (exam version):
- * ┌──────────────────────────┬──────────────────────────────────────────────────┐
+ * ┌--------------------------┬--------------------------------------------------┐
  * │ Log entry found          │ Action                                           │
- * ├──────────────────────────┼──────────────────────────────────────────────────┤
+ * ├--------------------------┼--------------------------------------------------┤
  * │ <COMMIT T>               │ Nothing - already committed                      │
  * │ <ABORT T>                │ Nothing - already aborted                        │
  * │ <PRECOMMIT T> only       │ Ask coordinator; if still precommit -> send ACK   │
  * │ <READY T> only           │ Ask coordinator                                  │
  * │ Nothing                  │ undo(T), write <ABORT T>                         │
- * └──────────────────────────┴──────────────────────────────────────────────────┘
+ * └--------------------------┴--------------------------------------------------┘
  */
 public class ThreePhaseParticipant {
 
@@ -34,7 +34,7 @@ public class ThreePhaseParticipant {
         this.canCommit = canCommit;
     }
 
-    // ── Phase 1: vote ─────────────────────────────────────────────────────────
+    // -- Phase 1: vote ---------------------------------------------------------
 
     public boolean prepare(String txId) {
         if (crashed) {
@@ -52,7 +52,7 @@ public class ThreePhaseParticipant {
         }
     }
 
-    // ── Phase 2: receive PRECOMMIT or ABORT ───────────────────────────────────
+    // -- Phase 2: receive PRECOMMIT or ABORT -----------------------------------
 
     /**
      * Receive PRECOMMIT from coordinator.
@@ -78,7 +78,7 @@ public class ThreePhaseParticipant {
         System.out.printf("  [%s] aborted transaction %s ✗%n", siteId, txId);
     }
 
-    // ── Phase 3: final commit ─────────────────────────────────────────────────
+    // -- Phase 3: final commit -------------------------------------------------
 
     public void commit(String txId) {
         if (crashed) { System.out.printf("  [%s] crashed - missed COMMIT (phase 3)%n", siteId); return; }
@@ -86,7 +86,7 @@ public class ThreePhaseParticipant {
         System.out.printf("  [%s] committed transaction %s ✓%n", siteId, txId);
     }
 
-    // ── Recovery ──────────────────────────────────────────────────────────────
+    // -- Recovery --------------------------------------------------------------
 
     public void recover(String txId) {
         crashed = false;

@@ -84,7 +84,7 @@ public class ThreePhaseCoordinator {
         }
         System.out.printf("  [%s] Received %d/%d acknowledgements%n", siteId, acks, participants.size());
 
-        // ── Crash AFTER PRECOMMIT is distributed ─────────────────────────────
+        // -- Crash AFTER PRECOMMIT is distributed -----------------------------
         // CRITICAL COMPARISON WITH 2PC:
         // In 2PC's equivalent moment (all ready, coordinator writes commit but hasn't sent it),
         // participants only have <READY T> -> fate unknown -> they BLOCK.

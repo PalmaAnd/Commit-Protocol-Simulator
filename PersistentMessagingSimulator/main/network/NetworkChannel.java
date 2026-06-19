@@ -35,7 +35,7 @@ public class NetworkChannel {
 
     public NetworkChannel() {}
 
-    // ── Core delivery ─────────────────────────────────────────────────────────
+    // -- Core delivery ---------------------------------------------------------
 
     /**
      * Attempt to deliver msg to receiver using the given fault mode.
@@ -81,12 +81,12 @@ public class NetworkChannel {
         return flushed;
     }
 
-    // ── Acknowledgement fault injection ──────────────────────────────────────
+    // -- Acknowledgement fault injection --------------------------------------
 
     /**
      * Register a message number whose acknowledgement should be dropped.
      * The receiver processes the message, but the sender never hears back
-     * → sender retransmits → receiver must deduplicate.
+     * -> sender retransmits -> receiver must deduplicate.
      */
     public void dropAckFor(long messageNumber) {
         ackDropNumbers.add(messageNumber);
@@ -105,7 +105,7 @@ public class NetworkChannel {
         return true;
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // -- Helpers ---------------------------------------------------------------
 
     private void log(String event) {
         deliveryLog.add(event);

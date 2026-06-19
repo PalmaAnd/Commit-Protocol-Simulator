@@ -6,12 +6,12 @@ package main.model;
  * Maps directly to a row in the messages_to_send relation:
  *
  *   messages_to_send
- *   ┌────────┬─────────────────┬──────┬──────────┐
+ *   ┌--------┬-----------------┬------┬----------┐
  *   │ number │ message         │ time │ ack      │
- *   ├────────┼─────────────────┼──────┼──────────┤
+ *   ├--------┼-----------------┼------┼----------┤
  *   │ 7      │ Q <- Q + 3      │  5   │          │
  *   │ 9      │ C <- C − 6      │  8   │          │
- *   └────────┴─────────────────┴──────┴──────────┘
+ *   └--------┴-----------------┴------┴----------┘
  *
  * The "ack" column is represented here as the boolean field `acknowledged`.
  * When true, the sender has confirmed delivery and this message is done.

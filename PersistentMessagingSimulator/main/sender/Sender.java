@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Models the sender S and its messages_to_send relation.
  *
- * ── Sender Protocol (from lecture) ───────────────────────────────────────────
+ * -- Sender Protocol (from lecture) -------------------------------------------
  *
  *  1. A transaction enqueues a message by inserting a row into messages_to_send.
  *     This insert happens INSIDE the transaction - if the transaction aborts,
@@ -23,7 +23,7 @@ import java.util.*;
  *     The sender periodically reports T_OLD to the receiver so it can
  *     clean up its received_messages relation.
  *
- * ── Key invariant ─────────────────────────────────────────────────────────────
+ * -- Key invariant -------------------------------------------------------------
  *  A message is NEVER deleted from messages_to_send until its ack is received.
  *  This guarantees at-least-once delivery even if the sender crashes.
  *  The receiver provides exactly-once by deduplicating on message number.
@@ -32,7 +32,7 @@ public class Sender {
 
     private final String id;
 
-    // The messages_to_send relation: number → Message
+    // The messages_to_send relation: number -> Message
     // Using LinkedHashMap to preserve insertion order (makes output readable)
     private final Map<Long, Message> messagesToSend = new LinkedHashMap<>();
 
@@ -43,7 +43,7 @@ public class Sender {
         this.id = id;
     }
 
-    // ── Transaction interface ─────────────────────────────────────────────────
+    // -- Transaction interface -------------------------------------------------
 
     /**
      * Enqueue a message as part of a transaction.
@@ -84,7 +84,7 @@ public class Sender {
         return msg;
     }
 
-    // ── Delivery process ──────────────────────────────────────────────────────
+    // -- Delivery process ------------------------------------------------------
 
     /**
      * Send a specific message over the channel with the given fault mode.
@@ -119,7 +119,7 @@ public class Sender {
         return sent;
     }
 
-    // ── Acknowledgement handling ──────────────────────────────────────────────
+    // -- Acknowledgement handling ----------------------------------------------
 
     /**
      * Called when an ack arrives for the given message number.
@@ -133,11 +133,11 @@ public class Sender {
             return;
         }
         msg.acknowledge();
-        System.out.printf("  [%s] Ack received for Msg#%d → marked 'received'%n",
+        System.out.printf("  [%s] Ack received for Msg#%d -> marked 'received'%n",
                 id, messageNumber);
     }
 
-    // ── T_OLD computation ─────────────────────────────────────────────────────
+    // -- T_OLD computation -----------------------------------------------------
 
     /**
      * Compute T_OLD: the timestamp of the OLDEST unacknowledged message.
@@ -168,7 +168,7 @@ public class Sender {
         return tOld;
     }
 
-    // ── Inspection ────────────────────────────────────────────────────────────
+    // -- Inspection ------------------------------------------------------------
 
     public void printTable() {
         System.out.printf("  [%s] messages_to_send:%n", id);

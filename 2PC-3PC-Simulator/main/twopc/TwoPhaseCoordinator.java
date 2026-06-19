@@ -38,7 +38,7 @@ public class TwoPhaseCoordinator {
         System.out.printf("║  2PC - transaction %-18s║%n", txId);
         System.out.printf("╚======================================╝%n");
 
-        // ── Inject crash before we even start ────────────────────────────────
+        // -- Inject crash before we even start --------------------------------
         if (failure == FailurePoint.BEFORE_PREPARE) {
             simulateCrash("before sending PREPARE");
             return;
@@ -56,7 +56,7 @@ public class TwoPhaseCoordinator {
             if (!vote) { allReady = false; }
         }
 
-        // ── Inject crash after collecting votes, before writing decision ──────
+        // -- Inject crash after collecting votes, before writing decision ------
         if (failure == FailurePoint.AFTER_PREPARE) {
             simulateCrash("after collecting votes, before writing decision");
             return;
@@ -75,7 +75,7 @@ public class TwoPhaseCoordinator {
             System.out.printf("  [%s] Decision: ABORT (at least one participant voted no)%n", siteId);
         }
 
-        // ── Inject crash AFTER writing decision but BEFORE telling anyone ─────
+        // -- Inject crash AFTER writing decision but BEFORE telling anyone -----
         // This is THE critical blocking scenario in 2PC:
         //   - All participants have <ready T> in their log
         //   - Nobody has received the commit/abort message
@@ -89,7 +89,7 @@ public class TwoPhaseCoordinator {
             return;
         }
 
-        // ── Broadcast decision ────────────────────────────────────────────────
+        // -- Broadcast decision ------------------------------------------------
         int sent = 0;
         for (TwoPhaseParticipant p : participants) {
             // Inject crash mid-broadcast (after some but not all are notified)

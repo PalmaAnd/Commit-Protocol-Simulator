@@ -16,16 +16,16 @@ java -cp out main.PersistentMessagingSimulator
 
 ```
 main/
-├── PersistentMessagingSimulator.java   <- main entry point, all scenarios
-├── model/
-│   ├── Message.java                    <- row in messages_to_send
-│   └── ReceivedMessage.java            <- row in received_messages
-├── network/
-│   └── NetworkChannel.java             <- unreliable network (drop, dup, delay)
-├── sender/
-│   └── Sender.java                     <- sender S + delivery process + T_OLD
-└── receiver/
-    └── Receiver.java                   <- receiver R + deduplication + cleanup
+├-- PersistentMessagingSimulator.java   <- main entry point, all scenarios
+├-- model/
+│   ├-- Message.java                    <- row in messages_to_send
+│   └-- ReceivedMessage.java            <- row in received_messages
+├-- network/
+│   └-- NetworkChannel.java             <- unreliable network (drop, dup, delay)
+├-- sender/
+│   └-- Sender.java                     <- sender S + delivery process + T_OLD
+└-- receiver/
+    └-- Receiver.java                   <- receiver R + deduplication + cleanup
 ```
 
 ---

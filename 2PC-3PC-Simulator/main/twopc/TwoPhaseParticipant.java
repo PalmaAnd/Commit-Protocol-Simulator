@@ -79,14 +79,14 @@ public class TwoPhaseParticipant {
      * Recovery protocol for a 2PC participant.
      *
      * EXAM TABLE:
-     * ┌─────────────────────────────┬──────────────────────────────────────────┐
+     * ┌-----------------------------┬------------------------------------------┐
      * │ Log entry found             │ Action                                   │
-     * ├─────────────────────────────┼──────────────────────────────────────────┤
+     * ├-----------------------------┼------------------------------------------┤
      * │ <COMMIT T>                  │ Nothing - already committed              │
      * │ <ABORT T>                   │ Nothing - already aborted                │
      * │ <READY T> only              │ Unknown fate -> contact coordinator       │
      * │ Nothing about T             │ Coordinator aborted -> undo(T)            │
-     * └─────────────────────────────┴──────────────────────────────────────────┘
+     * └-----------------------------┴------------------------------------------┘
      */
     public void recover(String txId) {
         crashed = false;

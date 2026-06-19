@@ -11,7 +11,7 @@ import main.sender.Sender;
  * ===========================================================================
  *
  *  SCENARIOS
- *  ─────────
+ *  ---------
  *  EXAM  - Exact table from Midterm II Exercise 2: compute T_OLD and show
  *          received_messages after applying it.
  *
@@ -135,7 +135,7 @@ public class PersistentMessagingSimulator {
             R.printReceivedTable();
 
             System.out.println("\n  [Attempt 2: sender retransmits (timeout)]");
-            // Receiver already has #1 in received_messages → duplicate → ignored
+            // Receiver already has #1 in received_messages -> duplicate -> ignored
             R.receiveAll(S.send(m1.number, channel, Fault.NONE), channel);
             // This time ack goes through
             S.receiveAck(m1.number);
@@ -192,7 +192,7 @@ public class PersistentMessagingSimulator {
                     R.getDataStore().get("C"));
 
             System.out.println("\n  [Attempt 2: sender retransmits]");
-            // Receiver sees #1 already in received_messages → duplicate → not re-applied
+            // Receiver sees #1 already in received_messages -> duplicate -> not re-applied
             R.receiveAll(S.send(m1.number, channel, Fault.NONE), channel);
             S.receiveAck(m1.number);
 
@@ -257,7 +257,7 @@ public class PersistentMessagingSimulator {
             R.printReceivedTable();
 
             System.out.println("\n  [Round 1: compute and apply T_OLD]");
-            // Unacked: m7 (t=5), m9 (t=8) → T_OLD = 5
+            // Unacked: m7 (t=5), m9 (t=8) -> T_OLD = 5
             long tOld1 = S.computeTOld();
             R.applyTOld(tOld1);
             System.out.println();
@@ -265,14 +265,14 @@ public class PersistentMessagingSimulator {
 
             System.out.println("\n  [Round 2: ack arrives for m9]");
             S.receiveAck(m9.number);
-            // Unacked: only m7 (t=5) → T_OLD = 5 (unchanged!)
+            // Unacked: only m7 (t=5) -> T_OLD = 5 (unchanged!)
             long tOld2 = S.computeTOld();
             R.applyTOld(tOld2);
             R.printReceivedTable();
 
             System.out.println("\n  [Round 3: ack arrives for m7]");
             S.receiveAck(m7.number);
-            // All acked → T_OLD = ∞
+            // All acked -> T_OLD = ∞
             long tOld3 = S.computeTOld();
             R.applyTOld(tOld3);
             System.out.println();
@@ -280,7 +280,7 @@ public class PersistentMessagingSimulator {
         }
     }
 
-    // ── Exact exam scenario from Midterm II Exercise 2 ────────────────────────
+    // -- Exact exam scenario from Midterm II Exercise 2 ------------------------
 
     private static void examScenario() {
         scenario("EXAM: Midterm II Exercise 2 - exact table state from exam\n" +
@@ -328,7 +328,7 @@ public class PersistentMessagingSimulator {
         System.out.println();
         long tOld = S.computeTOld();
 
-        System.out.println("\n  ── Answer to Part 1 ──────────────────────────────");
+        System.out.println("\n  -- Answer to Part 1 ------------------------------");
         System.out.printf("  T_OLD = %d%n", tOld);
         System.out.println("  Reasoning: after acking msg#9, unacked messages are:");
         System.out.println("    - msg#7 (time=5)");
@@ -339,13 +339,13 @@ public class PersistentMessagingSimulator {
         System.out.println("  Removing all rows with time < T_OLD = " + tOld);
         R.applyTOld(tOld);
 
-        System.out.println("\n  ── Answer to Part 2 ──────────────────────────────");
+        System.out.println("\n  -- Answer to Part 2 ------------------------------");
         R.printReceivedTable();
         System.out.println("  Reasoning: no row has time < 5 (all rows have time ≥ 5)");
         System.out.println("  Therefore received_messages is UNCHANGED.");
     }
 
-    // ── Utility ───────────────────────────────────────────────────────────────
+    // -- Utility ---------------------------------------------------------------
 
     private static void scenario(String description) {
         System.out.printf("%n%n");

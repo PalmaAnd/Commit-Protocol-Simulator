@@ -12,13 +12,13 @@ import java.util.List;
  *  This simulator runs eight scenarios covering all exam-relevant cases.
  *
  *  HOW TO READ THE OUTPUT
- *  ──────────────────────
+ *  ----------------------
  *  [LOG site]  = a log entry written to stable storage (survives crashes)
  *  [site]      = an action or message received by that site
  *  *** text *** = a crash or key observation
  *
  *  SCENARIOS
- *  ─────────
+ *  ---------
  *  2PC-1  Happy path: all participants vote READY, transaction commits
  *  2PC-2  One participant votes ABORT, transaction aborts
  *  2PC-3  *** THE BLOCKING SCENARIO ***
@@ -40,9 +40,9 @@ public class CommitSimulator {
 
     public static void main(String[] args) {
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
         // 2PC SCENARIOS
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("2PC-1: Happy path - all participants ready");
         {
@@ -53,7 +53,7 @@ public class CommitSimulator {
             coord.runProtocol("T1", List.of(p1, p2, p3), FailurePoint.NONE);
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("2PC-2: One participant votes ABORT");
         {
@@ -64,7 +64,7 @@ public class CommitSimulator {
             coord.runProtocol("T2", List.of(p1, p2, p3), FailurePoint.NONE);
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("2PC-3: *** THE BLOCKING PROBLEM ***\n" +
                  "       Coordinator crashes after writing decision, before sending it.\n" +
@@ -84,7 +84,7 @@ public class CommitSimulator {
             p3.recover("T3");
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("2PC-4: Participant S2 crashes before Phase 1, then recovers");
         {
@@ -103,9 +103,9 @@ public class CommitSimulator {
             p2.recover("T4"); // finds nothing in log -> undo
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
         // 3PC SCENARIOS
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("3PC-1: Happy path - all three phases complete");
         {
@@ -116,7 +116,7 @@ public class CommitSimulator {
             coord.runProtocol("T5", List.of(p1, p2, p3), FailurePoint.NONE);
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("3PC-2: One participant votes ABORT -> clean abort");
         {
@@ -127,7 +127,7 @@ public class CommitSimulator {
             coord.runProtocol("T6", List.of(p1, p2, p3), FailurePoint.NONE);
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("3PC-3: *** KEY INSIGHT - No blocking after coordinator crash ***\n" +
                  "       Coordinator crashes after PRECOMMIT distributed.\n" +
@@ -146,7 +146,7 @@ public class CommitSimulator {
             p3.recover("T7");
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         scenario("3PC-4: Participant S2 misses PRECOMMIT, then recovers");
         {
@@ -163,9 +163,9 @@ public class CommitSimulator {
             p2.recover("T8");
         }
 
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
         // SIDE-BY-SIDE COMPARISON SUMMARY
-        // ────────────────────────────────────────────────────────────────────
+        // --------------------------------------------------------------------
 
         System.out.printf("%n%n");
         System.out.printf("╔======================================================================╗%n");
