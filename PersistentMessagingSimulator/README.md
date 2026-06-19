@@ -1,4 +1,4 @@
-# Assignment 2 - Persistent Messaging System
+# Persistent Messaging System
 
 ## Setup
 
@@ -16,16 +16,16 @@ java -cp out main.PersistentMessagingSimulator
 
 ```
 main/
-├── PersistentMessagingSimulator.java   ← main entry point, all scenarios
+├── PersistentMessagingSimulator.java   <- main entry point, all scenarios
 ├── model/
-│   ├── Message.java                    ← row in messages_to_send
-│   └── ReceivedMessage.java            ← row in received_messages
+│   ├── Message.java                    <- row in messages_to_send
+│   └── ReceivedMessage.java            <- row in received_messages
 ├── network/
-│   └── NetworkChannel.java             ← unreliable network (drop, dup, delay)
+│   └── NetworkChannel.java             <- unreliable network (drop, dup, delay)
 ├── sender/
-│   └── Sender.java                     ← sender S + delivery process + T_OLD
+│   └── Sender.java                     <- sender S + delivery process + T_OLD
 └── receiver/
-    └── Receiver.java                   ← receiver R + deduplication + cleanup
+    └── Receiver.java                   <- receiver R + deduplication + cleanup
 ```
 
 ---
@@ -84,7 +84,7 @@ This is the most important scenario to understand. Run PM-3 and answer:
    Trace exactly what happens inside `Receiver.receive()`:
    - What check is performed first?
    - What is the result of that check?
-   - What happens to the operation `B ← B − 30`?
+   - What happens to the operation `B <- B − 30`?
 
 3. Why is it critical that the ack is sent **after** the transaction commits,
    not before? What would go wrong if the ack were sent before commit?

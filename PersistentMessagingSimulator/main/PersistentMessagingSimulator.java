@@ -52,9 +52,9 @@ public class PersistentMessagingSimulator {
             R.initDataStore("Q", 10);
             R.initDataStore("A", 20);
 
-            var m1 = S.enqueue("Q ← Q + 5");
-            var m2 = S.enqueue("A ← A + 3");
-            var m3 = S.enqueue("Q ← Q - 2");
+            var m1 = S.enqueue("Q <- Q + 5");
+            var m2 = S.enqueue("A <- A + 3");
+            var m3 = S.enqueue("Q <- Q - 2");
 
             System.out.println("\n  [Initial state]");
             S.printTable();
@@ -86,8 +86,8 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
             R.initDataStore("Q", 100);
 
-            var m1 = S.enqueue("Q ← Q + 10");
-            var m2 = S.enqueue("Q ← Q + 20");
+            var m1 = S.enqueue("Q <- Q + 10");
+            var m2 = S.enqueue("Q <- Q + 20");
 
             System.out.println("\n  [Attempt 1: m1 dropped, m2 succeeds]");
             R.receiveAll(S.send(m1.number, channel, Fault.DROP), channel);    // lost!
@@ -122,7 +122,7 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
             R.initDataStore("B", 100);
 
-            var m1 = S.enqueue("B ← B - 30");
+            var m1 = S.enqueue("B <- B - 30");
 
             System.out.println("\n  [Attempt 1: message delivered, ack dropped]");
             R.receiveAll(S.send(m1.number, channel, Fault.NONE), channel);
@@ -154,7 +154,7 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
             R.initDataStore("A", 50);
 
-            var m1 = S.enqueue("A ← A + 15");
+            var m1 = S.enqueue("A <- A + 15");
 
             System.out.println("\n  [Delivery with DUPLICATE fault]");
             // channel.deliver() sends the message twice in one call
@@ -177,7 +177,7 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
             R.initDataStore("C", 200);
 
-            var m1 = S.enqueue("C ← C - 50");
+            var m1 = S.enqueue("C <- C - 50");
 
             System.out.println("\n  [Attempt 1: receiver crashes after commit, before ack]");
             R.crashAfterNextCommit();   // arm the crash trigger
@@ -209,8 +209,8 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
             R.initDataStore("X", 0);
 
-            var m1 = S.enqueue("X ← X + 10");  // sent first, arrives second
-            var m2 = S.enqueue("X ← X + 20");  // sent second, arrives first
+            var m1 = S.enqueue("X <- X + 10");  // sent first, arrives second
+            var m2 = S.enqueue("X <- X + 20");  // sent second, arrives first
 
             System.out.println("\n  [m2 arrives first (delayed delivery of m1)]");
             // Delay m1 (it's in transit), deliver m2 immediately
@@ -241,16 +241,16 @@ public class PersistentMessagingSimulator {
             var R = new Receiver("R");
 
             // Pre-load 5 messages - some already acked (as in the exam table)
-            var m1 = S.enqueueWithTime(1, "Q ← Q + 9", 2, true);   // acked
-            var m3 = S.enqueueWithTime(3, "A ← A + 3", 3, true);   // acked
-            var m7 = S.enqueueWithTime(7, "Q ← Q + 3", 5, false);  // NOT acked
-            var m8 = S.enqueueWithTime(8, "B ← B - 9", 7, true);   // acked
-            var m9 = S.enqueueWithTime(9, "C ← C - 6", 8, false);  // NOT acked
+            var m1 = S.enqueueWithTime(1, "Q <- Q + 9", 2, true);   // acked
+            var m3 = S.enqueueWithTime(3, "A <- A + 3", 3, true);   // acked
+            var m7 = S.enqueueWithTime(7, "Q <- Q + 3", 5, false);  // NOT acked
+            var m8 = S.enqueueWithTime(8, "B <- B - 9", 7, true);   // acked
+            var m9 = S.enqueueWithTime(9, "C <- C - 6", 8, false);  // NOT acked
 
             // Pre-load receiver's table to match exam state
-            R.preloadReceivedMessage(7, "Q ← Q + 3", 5);
-            R.preloadReceivedMessage(8, "B ← B - 9", 7);
-            R.preloadReceivedMessage(9, "C ← C - 6", 8);
+            R.preloadReceivedMessage(7, "Q <- Q + 3", 5);
+            R.preloadReceivedMessage(8, "B <- B - 9", 7);
+            R.preloadReceivedMessage(9, "C <- C - 6", 8);
 
             System.out.println("\n  [Initial state - matches Midterm II Table 1]");
             S.printTable();
@@ -292,25 +292,25 @@ public class PersistentMessagingSimulator {
 
         // Recreate the exact messages_to_send table from the exam:
         //   number | message      | time | ack
-        //   1      | Q ← Q + 9   | 2    | received
-        //   3      | A ← A + 3   | 3    | received
-        //   7      | Q ← Q + 3   | 5    |
-        //   8      | B ← B − 9   | 7    | received
-        //   9      | C ← C − 6   | 8    |
-        S.enqueueWithTime(1, "Q ← Q + 9", 2, true);
-        S.enqueueWithTime(3, "A ← A + 3", 3, true);
-        S.enqueueWithTime(7, "Q ← Q + 3", 5, false);
-        S.enqueueWithTime(8, "B ← B - 9", 7, true);
-        S.enqueueWithTime(9, "C ← C - 6", 8, false);
+        //   1      | Q <- Q + 9   | 2    | received
+        //   3      | A <- A + 3   | 3    | received
+        //   7      | Q <- Q + 3   | 5    |
+        //   8      | B <- B − 9   | 7    | received
+        //   9      | C <- C − 6   | 8    |
+        S.enqueueWithTime(1, "Q <- Q + 9", 2, true);
+        S.enqueueWithTime(3, "A <- A + 3", 3, true);
+        S.enqueueWithTime(7, "Q <- Q + 3", 5, false);
+        S.enqueueWithTime(8, "B <- B - 9", 7, true);
+        S.enqueueWithTime(9, "C <- C - 6", 8, false);
 
         // Recreate the exact received_messages table from the exam:
         //   number | message      | time | ack
-        //   7      | Q ← Q + 3   | 5    | sent
-        //   8      | B ← B − 9   | 7    | sent
-        //   9      | C ← C − 6   | 8    | sent
-        R.preloadReceivedMessage(7, "Q ← Q + 3", 5);
-        R.preloadReceivedMessage(8, "B ← B - 9", 7);
-        R.preloadReceivedMessage(9, "C ← C - 6", 8);
+        //   7      | Q <- Q + 3   | 5    | sent
+        //   8      | B <- B − 9   | 7    | sent
+        //   9      | C <- C − 6   | 8    | sent
+        R.preloadReceivedMessage(7, "Q <- Q + 3", 5);
+        R.preloadReceivedMessage(8, "B <- B - 9", 7);
+        R.preloadReceivedMessage(9, "C <- C - 6", 8);
 
         System.out.println("\n  [Exact exam table state]");
         S.printTable();

@@ -51,7 +51,7 @@ public class Sender {
      * that performs the business logic - atomicity ensures the message
      * is only enqueued if the transaction commits.
      *
-     * @param operation  the DB update to apply at the receiver (e.g. "Q ← Q + 3")
+     * @param operation  the DB update to apply at the receiver (e.g. "Q <- Q + 3")
      * @return the created Message (for inspection / test assertions)
      */
     public Message enqueue(String operation) {

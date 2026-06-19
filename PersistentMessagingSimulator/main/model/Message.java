@@ -9,8 +9,8 @@ package main.model;
  *   ┌────────┬─────────────────┬──────┬──────────┐
  *   │ number │ message         │ time │ ack      │
  *   ├────────┼─────────────────┼──────┼──────────┤
- *   │ 7      │ Q ← Q + 3      │  5   │          │
- *   │ 9      │ C ← C − 6      │  8   │          │
+ *   │ 7      │ Q <- Q + 3      │  5   │          │
+ *   │ 9      │ C <- C − 6      │  8   │          │
  *   └────────┴─────────────────┴──────┴──────────┘
  *
  * The "ack" column is represented here as the boolean field `acknowledged`.
@@ -19,7 +19,7 @@ package main.model;
 public class Message {
 
     public final long number;       // unique message ID, monotonically increasing
-    public final String operation;  // e.g. "Q ← Q + 3" - the DB update to apply
+    public final String operation;  // e.g. "Q <- Q + 3" - the DB update to apply
     public final long time;         // logical timestamp at time of creation
 
     // Mutable state - updated when acknowledgement arrives

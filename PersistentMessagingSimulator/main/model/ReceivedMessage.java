@@ -7,8 +7,8 @@ package main.model;
  *   ┌────────┬─────────────────┬──────┬──────┐
  *   │ number │ message         │ time │ ack  │
  *   ├────────┼─────────────────┼──────┼──────┤
- *   │ 7      │ Q ← Q + 3      │  5   │ sent │
- *   │ 8      │ B ← B − 9      │  7   │ sent │
+ *   │ 7      │ Q <- Q + 3      │  5   │ sent │
+ *   │ 8      │ B <- B − 9      │  7   │ sent │
  *   └────────┴─────────────────┴──────┴──────┘
  *
  * The "ack" column here tracks whether the receiver has sent its

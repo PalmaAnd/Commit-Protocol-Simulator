@@ -179,16 +179,16 @@ public class Receiver {
     // ── Operation interpreter ─────────────────────────────────────────────────
 
     /**
-     * Parse and apply a simple DB operation of the form "X ← X + n" or "X ← X - n".
+     * Parse and apply a simple DB operation of the form "X <- X + n" or "X <- X - n".
      *
      * In a real system this would be a full SQL statement; here we keep
      * it simple to focus on the messaging protocol.
      */
     private void applyOperation(String operation) {
         try {
-            // Parse "VAR ← VAR OP NUMBER"
-            // e.g. "Q ← Q + 3" or "B ← B − 9"
-            String[] parts = operation.split("←");
+            // Parse "VAR <- VAR OP NUMBER"
+            // e.g. "Q <- Q + 3" or "B <- B − 9"
+            String[] parts = operation.split("<-");
             String varName = parts[0].trim();
             String expr    = parts[1].trim();       // "Q + 3" or "B − 9"
 

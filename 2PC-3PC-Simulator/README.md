@@ -16,17 +16,17 @@ java -cp out main.CommitSimulator
 
 ```
 main/
-├── CommitSimulator.java          ← main entry point, all 8 scenarios
+├── CommitSimulator.java          <- main entry point, all 8 scenarios
 ├── common/
-│   ├── LogEntry.java             ← stable log entry (PREPARE, READY, PRECOMMIT, COMMIT, ABORT)
-│   ├── SiteLog.java              ← a site's persistent log
-│   └── FailurePoint.java         ← enum controlling where crashes are injected
+│   ├── LogEntry.java             <- stable log entry (PREPARE, READY, PRECOMMIT, COMMIT, ABORT)
+│   ├── SiteLog.java              <- a site's persistent log
+│   └── FailurePoint.java         <- enum controlling where crashes are injected
 ├── twopc/
-│   ├── TwoPhaseCoordinator.java  ← drives both 2PC phases
-│   └── TwoPhaseParticipant.java  ← votes, applies decisions, recovers
+│   ├── TwoPhaseCoordinator.java  <- drives both 2PC phases
+│   └── TwoPhaseParticipant.java  <- votes, applies decisions, recovers
 └── threepc/
-    ├── ThreePhaseCoordinator.java ← drives all 3 phases of 3PC
-    └── ThreePhaseParticipant.java ← votes, precommits, commits, recovers
+    ├── ThreePhaseCoordinator.java <- drives all 3 phases of 3PC
+    └── ThreePhaseParticipant.java <- votes, precommits, commits, recovers
 ```
 
 ---
